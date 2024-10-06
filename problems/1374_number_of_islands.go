@@ -6,31 +6,48 @@ import (
 )
 
 func numIslands(grid [][]byte) int {
+	return numIslandsV3(grid)
+}
+
+func numIslandsV2(grid [][]byte) int {
 	mLen := len(grid)
 	nLen := len(grid[0])
 	visitedLands := utils.ZeroSliceMxN[bool](mLen, nLen)
 
-	type coord struct {
-		m, n int
-	}
-
+	var mSearchIter, nSearchIter int
 	findFirstNotVisitedLandCoords := func() (int, int, bool) {
-		for m := 0; m < mLen; m++ {
-			for n := 0; n < nLen; n++ {
-				if visitedLands[m][n] {
+		for ; mSearchIter < mLen; mSearchIter++ {
+			for ; nSearchIter < nLen; nSearchIter++ {
+				if visitedLands[mSearchIter][nSearchIter] {
 					continue
 				}
-				visitedLands[m][n] = true
-				if grid[m][n] == '0' {
+				visitedLands[mSearchIter][nSearchIter] = true
+				if grid[mSearchIter][nSearchIter] == '0' {
 					continue
 				}
-				return m, n, true
+				return mSearchIter, nSearchIter, true
 			}
+			nSearchIter = 0
 		}
 		return 0, 0, false
 	}
 
-	queue := kit.NewSimpleQueue[coord]()
+	type coords struct {
+		m, n int
+	}
+	queue := kit.NewSimpleQueue[coords]()
+	enqueueIfNotVisitedLand := func(m, n int) {
+		if n < 0 || n >= nLen || m < 0 || m >= mLen {
+			return
+		}
+		if visitedLands[m][n] {
+			return
+		}
+		visitedLands[m][n] = true
+		if grid[m][n] == '1' {
+			queue.Enqueue(coords{m, n})
+		}
+	}
 	var cnt int
 	for {
 		m, n, found := findFirstNotVisitedLandCoords()
@@ -38,33 +55,72 @@ func numIslands(grid [][]byte) int {
 			break
 		}
 
-		queue.Enqueue(coord{m, n})
+		queue.Enqueue(coords{m, n})
 		for !queue.Empty() {
 			c, _ := queue.Dequeue()
-			if c.n+1 < nLen && !visitedLands[c.m][c.n+1] {
-				visitedLands[c.m][c.n+1] = true
-				if grid[c.m][c.n+1] == '1' {
-					queue.Enqueue(coord{c.m, c.n + 1})
+			enqueueIfNotVisitedLand(c.m, c.n+1)
+			enqueueIfNotVisitedLand(c.m+1, c.n)
+			enqueueIfNotVisitedLand(c.m, c.n-1)
+			enqueueIfNotVisitedLand(c.m-1, c.n)
+		}
+		cnt++
+	}
+	return cnt
+}
+
+func numIslandsV3(grid [][]byte) int {
+	mLen := len(grid)
+	nLen := len(grid[0])
+
+	var mSearchIter, nSearchIter int
+	findFirstNotVisitedLandCoords := func() (int, int, bool) {
+		for ; mSearchIter < mLen; mSearchIter++ {
+			for ; nSearchIter < nLen; nSearchIter++ {
+				if grid[mSearchIter][nSearchIter] == 'v' {
+					continue
 				}
-			}
-			if c.m+1 < mLen && !visitedLands[c.m+1][c.n] {
-				visitedLands[c.m+1][c.n] = true
-				if grid[c.m+1][c.n] == '1' {
-					queue.Enqueue(coord{c.m + 1, c.n})
+				if grid[mSearchIter][nSearchIter] == '0' {
+					grid[mSearchIter][nSearchIter] = 'v'
+					continue
 				}
+				grid[mSearchIter][nSearchIter] = 'v'
+				return mSearchIter, nSearchIter, true
 			}
-			if c.n-1 >= 0 && !visitedLands[c.m][c.n-1] {
-				visitedLands[c.m][c.n-1] = true
-				if grid[c.m][c.n-1] == '1' {
-					queue.Enqueue(coord{c.m, c.n - 1})
-				}
-			}
-			if c.m-1 >= 0 && !visitedLands[c.m-1][c.n] {
-				visitedLands[c.m-1][c.n] = true
-				if grid[c.m-1][c.n] == '1' {
-					queue.Enqueue(coord{c.m - 1, c.n})
-				}
-			}
+			nSearchIter = 0
+		}
+		return 0, 0, false
+	}
+
+	type coords struct {
+		m, n int
+	}
+	queue := kit.NewSimpleQueue[coords]()
+	enqueueIfNotVisitedLand := func(m, n int) {
+		if n < 0 || n >= nLen || m < 0 || m >= mLen {
+			return
+		}
+		if grid[m][n] == 'v' {
+			return
+		}
+		if grid[m][n] == '1' {
+			queue.Enqueue(coords{m, n})
+		}
+		grid[m][n] = 'v'
+	}
+	var cnt int
+	for {
+		m, n, found := findFirstNotVisitedLandCoords()
+		if !found {
+			break
+		}
+
+		queue.Enqueue(coords{m, n})
+		for !queue.Empty() {
+			c, _ := queue.Dequeue()
+			enqueueIfNotVisitedLand(c.m, c.n+1)
+			enqueueIfNotVisitedLand(c.m+1, c.n)
+			enqueueIfNotVisitedLand(c.m, c.n-1)
+			enqueueIfNotVisitedLand(c.m-1, c.n)
 		}
 		cnt++
 	}
