@@ -1,6 +1,7 @@
 package problems
 
 import (
+	"math"
 	"testing"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 
 func Test_wallsAndGates(t *testing.T) {
 	const (
-		r = 2147483647
+		r = math.MaxInt32
 		G = 0
 		W = -1
 	)

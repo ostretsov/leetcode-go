@@ -7,7 +7,7 @@ import (
 
 // https://leetcode.com/problems/walls-and-gates/description/
 func wallsAndGates(rooms [][]int) {
-	wallsAndGatesV3MemEfficient(rooms)
+	wallsAndGatesV4Short(rooms)
 }
 
 func wallsAndGatesV1Slow(rooms [][]int) {
@@ -175,5 +175,42 @@ func wallsAndGatesV3MemEfficient(rooms [][]int) {
 			visitNotVisitedRoom(c.m+1, c.n, c.dstFromGt+1)
 			visitNotVisitedRoom(c.m-1, c.n, c.dstFromGt+1)
 		}
+	}
+}
+
+func wallsAndGatesV4Short(rooms [][]int) {
+	mLen := len(rooms)
+	nLen := len(rooms[0])
+
+	type coords struct {
+		m, n      int
+		dstFromGt int
+	}
+	queue := kit.SimpleQueue[coords]{}
+	visitNotVisitedRoom := func(m, n, dstFromGt int) {
+		if m < 0 || m >= mLen || n < 0 || n >= nLen {
+			return
+		}
+		if rooms[m][n] == -1 || rooms[m][n] == 0 || rooms[m][n] <= dstFromGt {
+			return
+		}
+		rooms[m][n] = dstFromGt
+		queue.Enqueue(coords{m, n, dstFromGt})
+	}
+
+	for mi := 0; mi < mLen; mi++ {
+		for ni := 0; ni < nLen; ni++ {
+			if rooms[mi][ni] == 0 {
+				queue.Enqueue(coords{mi, ni, 0})
+			}
+		}
+	}
+
+	for !queue.Empty() {
+		c, _ := queue.Dequeue()
+		visitNotVisitedRoom(c.m, c.n+1, c.dstFromGt+1)
+		visitNotVisitedRoom(c.m, c.n-1, c.dstFromGt+1)
+		visitNotVisitedRoom(c.m+1, c.n, c.dstFromGt+1)
+		visitNotVisitedRoom(c.m-1, c.n, c.dstFromGt+1)
 	}
 }
