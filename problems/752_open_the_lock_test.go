@@ -36,3 +36,28 @@ func Test_allNextMoves(t *testing.T) {
 	ast.Contains(got, "1000")
 	ast.Contains(got, "9000")
 }
+
+func Test_allNextMovesInt(t *testing.T) {
+	ast := assert.New(t)
+	got := allNextMovesInt(0)
+	ast.Len(got, 8)
+	ast.Contains(got, 1)
+	ast.Contains(got, 9)
+	ast.Contains(got, 10)
+	ast.Contains(got, 90)
+	ast.Contains(got, 100)
+	ast.Contains(got, 900)
+	ast.Contains(got, 1000)
+	ast.Contains(got, 9000)
+
+	got = allNextMovesInt(1234)
+	ast.Len(got, 8)
+	ast.Contains(got, 2234)
+	ast.Contains(got, 234)
+	ast.Contains(got, 1334)
+	ast.Contains(got, 1134)
+	ast.Contains(got, 1244)
+	ast.Contains(got, 1224)
+	ast.Contains(got, 1233)
+	ast.Contains(got, 1235)
+}

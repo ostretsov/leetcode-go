@@ -1,14 +1,16 @@
 package problems
 
 import (
+	"math"
 	"slices"
+	"strconv"
 
 	"leetcode-go/kit"
 )
 
 // https://leetcode.com/problems/open-the-lock/description/
 func openLock(deadends []string, target string) int {
-	return openLockV2Faster(deadends, target)
+	return openLockV3FasterWithInts(deadends, target)
 }
 
 func openLockV1Slow(deadends []string, target string) int {
@@ -100,3 +102,78 @@ func openLockV2Faster(deadends []string, target string) int {
 	}
 	return -1
 }
+
+func openLockV3FasterWithInts(deadends []string, target string) int {
+	if slices.Contains(deadends, "0000") {
+		return -1
+	}
+	if target == "0000" {
+		return 0
+	}
+
+	deadendsInt := make([]int, len(deadends))
+	for i, d := range deadends {
+		deadendsInt[i], _ = strconv.Atoi(d)
+	}
+	targetInt, _ := strconv.Atoi(target)
+
+	type move struct {
+		state int
+		depth int
+	}
+	queue := kit.SimpleQueue[move]{}
+	queue.Enqueue(move{0000, 0})
+	visitedStates := make(map[int]struct{})
+	for !queue.Empty() {
+		m, _ := queue.Dequeue()
+		for _, nextMove := range allNextMovesInt(m.state) {
+			if _, ok := visitedStates[nextMove]; ok {
+				continue
+			}
+			if slices.Contains(deadendsInt, nextMove) {
+				continue
+			}
+			if nextMove == targetInt {
+				return m.depth + 1
+			}
+			visitedStates[nextMove] = struct{}{}
+			queue.Enqueue(move{nextMove, m.depth + 1})
+		}
+	}
+	return -1
+}
+
+func allNextMovesInt(state int) []int {
+	var st [4]int
+	for i := 0; i < 4; i++ {
+		st[i] = (state % int(math.Pow10(4-i))) / int(math.Pow10(3-i))
+	}
+	var nextMoves []int
+	for i := 0; i < 4; i++ {
+		v := st[i]
+		nextDg := (st[i] + 1) % 10
+		prevDg := (st[i] + 9) % 10
+		st[i] = nextDg
+		nextMoves = append(nextMoves, num(st))
+		st[i] = prevDg
+		nextMoves = append(nextMoves, num(st))
+		st[i] = v
+	}
+	return nextMoves
+}
+
+func num(n [4]int) int {
+	var r int
+	for i, v := range n {
+		r += v * int(math.Pow10(3-i))
+	}
+	return r
+}
+
+//1234
+//
+//n % 10^(4-i)
+//
+//10^(3-i) * 10^(3-i)
+//
+//
