@@ -28,3 +28,7 @@ func (s *SimpleStack[T]) Top() (T, bool) {
 func (s *SimpleStack[T]) Empty() bool {
 	return len(s.data) == 0
 }
+
+func (s *SimpleStack[T]) Len() int {
+	return len(s.data)
+}
