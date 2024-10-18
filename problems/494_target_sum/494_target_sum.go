@@ -1,4 +1,4 @@
-package problems
+package _94_target_sum
 
 // https://leetcode.com/problems/target-sum/description/
 func findTargetSumWays(nums []int, target int) int {

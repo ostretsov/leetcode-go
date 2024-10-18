@@ -1,4 +1,4 @@
-package problems
+package _94_target_sum
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package problems
+package _52_open_the_lock
 
 import (
 	"testing"

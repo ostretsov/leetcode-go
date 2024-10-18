@@ -1,4 +1,4 @@
-package problems
+package _50_eval_rpn
 
 import (
 	"slices"

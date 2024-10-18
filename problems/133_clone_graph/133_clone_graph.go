@@ -1,4 +1,4 @@
-package problems
+package _33_clone_graph
 
 // Rename to "Node"
 type CloneGraphNode struct {

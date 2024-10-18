@@ -1,4 +1,4 @@
-package problems
+package _374_number_of_islands
 
 import (
 	"leetcode-go/kit"

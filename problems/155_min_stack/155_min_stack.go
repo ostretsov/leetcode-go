@@ -1,4 +1,4 @@
-package problems
+package _55_min_stack
 
 // https://leetcode.com/problems/min-stack/description/
 

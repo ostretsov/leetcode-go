@@ -1,4 +1,4 @@
-package problems
+package _86_walls_and_gates
 
 import (
 	"leetcode-go/kit"

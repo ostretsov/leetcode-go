@@ -1,4 +1,4 @@
-package problems
+package _79_perfect_squares
 
 import "leetcode-go/kit"
 

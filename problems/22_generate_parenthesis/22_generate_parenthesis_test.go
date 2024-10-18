@@ -1,4 +1,4 @@
-package problems
+package _2_generate_parenthesis
 
 import (
 	"testing"

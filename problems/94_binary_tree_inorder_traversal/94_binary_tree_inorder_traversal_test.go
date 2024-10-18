@@ -1,4 +1,4 @@
-package problems
+package _4_binary_tree_inorder_traversal
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package problems
+package _39_daily_temperatures
 
 import "leetcode-go/kit"
 
