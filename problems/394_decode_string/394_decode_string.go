@@ -9,6 +9,56 @@ import (
 
 // https://leetcode.com/problems/decode-string/description/
 func decodeString(s string) string {
+	return decodeStringV2StackTokens(s)
+}
+
+func decodeStringV2StackTokens(s string) string {
+	type token struct {
+		k int
+		s string
+	}
+
+	stack := kit.SimpleStack[token]{}
+	var kStr string
+	for _, r := range s {
+		switch {
+		case r >= '0' && r <= '9':
+			kStr += string(r)
+			continue
+		case r == '[':
+			k, _ := strconv.Atoi(kStr)
+			stack.Push(token{k: k})
+			kStr = ""
+		case r == ']':
+			var str string
+			for {
+				t, _ := stack.Pop()
+				if t.s == "[" {
+					break
+				}
+				str = t.s + str
+			}
+			t, _ := stack.Pop()
+			str = strings.Repeat(str, t.k)
+			stack.Push(token{s: str})
+			continue
+		}
+		stack.Push(token{s: string(r)})
+	}
+	var resStr string
+	for !stack.Empty() {
+		t, _ := stack.Pop()
+		resStr = t.s + resStr
+	}
+	return resStr
+}
+
+func decodeStringV1MySolution(s string) string {
+	type state struct {
+		repCnt int
+		repStr string
+	}
+
 	var decodedStr string
 	var repCntStr, repStr string
 	var repCnt int
@@ -53,9 +103,4 @@ func decodeString(s string) string {
 		}
 	}
 	return decodedStr + repStr
-}
-
-type state struct {
-	repCnt int
-	repStr string
 }
