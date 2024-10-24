@@ -6,7 +6,7 @@ import (
 
 // https://leetcode.com/problems/01-matrix/description/
 func updateMatrix(mat [][]int) [][]int {
-	return updateMatrixV1Slow(mat)
+	return updateMatrixV2StartFromAllZeros(mat)
 }
 
 func updateMatrixV1Slow(mat [][]int) [][]int {
@@ -51,6 +51,53 @@ func updateMatrixV1Slow(mat [][]int) [][]int {
 			visit(c.m+1, c.n, c.dstZero)
 			visit(c.m-1, c.n, c.dstZero)
 		}
+	}
+
+	return mat
+}
+
+func updateMatrixV2StartFromAllZeros(mat [][]int) [][]int {
+	mLen := len(mat)
+	nLen := len(mat[0])
+
+	type cell struct {
+		m, n, dstZero int
+	}
+
+	visitedCells := make(map[int]bool)
+	queue := kit.SimpleQueue[cell]{}
+	visit := func(nextM, nextN, dstZero int) {
+		if nextM < 0 || nextM >= mLen || nextN < 0 || nextN >= nLen {
+			return
+		}
+		if mat[nextM][nextN] == 0 {
+			return
+		}
+		if !visitedCells[nextM*10_000+nextN] {
+			queue.Enqueue(cell{nextM, nextN, dstZero})
+		}
+	}
+
+	for mi := 0; mi < mLen; mi++ {
+		for ni := 0; ni < nLen; ni++ {
+			if mat[mi][ni] == 0 {
+				queue.Enqueue(cell{mi, ni, 0})
+			}
+		}
+	}
+
+	for !queue.Empty() {
+		c, _ := queue.Dequeue()
+		if visitedCells[c.m*10_000+c.n] {
+			continue
+		}
+		visitedCells[c.m*10_000+c.n] = true
+		mat[c.m][c.n] = c.dstZero
+
+		visit(c.m, c.n+1, c.dstZero+1)
+		visit(c.m, c.n-1, c.dstZero+1)
+		visit(c.m+1, c.n, c.dstZero+1)
+		visit(c.m-1, c.n, c.dstZero+1)
 	}
 
 	return mat

@@ -2,6 +2,7 @@ package _42_01_matrix
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -63,8 +64,7 @@ func Test_updateMatrix(t *testing.T) {
 	})
 
 	t.Run("Example19", func(t *testing.T) {
-		//ast := assert.New(t)
-
+		start := time.Now()
 		updateMatrix([][]int{
 			{1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1},
 			{1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1},
@@ -97,7 +97,9 @@ func Test_updateMatrix(t *testing.T) {
 			{1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1},
 			{0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0},
 		})
-
+		if time.Since(start) > 1*time.Second {
+			t.Error("timeout")
+		}
 	})
 
 	t.Run("my example1", func(t *testing.T) {
@@ -112,5 +114,23 @@ func Test_updateMatrix(t *testing.T) {
 		ast.Equal([]int{0, 0, 0}, got[0])
 		ast.Equal([]int{1, 1, 1}, got[1])
 		ast.Equal([]int{0, 0, 1}, got[2])
+	})
+
+	t.Run("my example2", func(t *testing.T) {
+		ast := assert.New(t)
+
+		got := updateMatrix([][]int{
+			{1, 1, 1, 1, 1},
+			{1, 1, 1, 1, 1},
+			{0, 1, 1, 1, 0},
+			{1, 1, 1, 1, 1},
+			{1, 1, 1, 1, 1},
+		})
+
+		ast.Equal([]int{2, 3, 4, 3, 2}, got[0])
+		ast.Equal([]int{1, 2, 3, 2, 1}, got[1])
+		ast.Equal([]int{0, 1, 2, 1, 0}, got[2])
+		ast.Equal([]int{1, 2, 3, 2, 1}, got[3])
+		ast.Equal([]int{2, 3, 4, 3, 2}, got[4])
 	})
 }
