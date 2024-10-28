@@ -6,6 +6,10 @@ import (
 
 // https://leetcode.com/problems/next-greater-element-ii/
 func nextGreaterElements(nums []int) []int {
+	return nextGreaterElementsV2(nums)
+}
+
+func nextGreaterElementsV1(nums []int) []int {
 	res := make([]int, len(nums))
 	for i := range nums {
 		res[i] = -1
@@ -29,6 +33,23 @@ func nextGreaterElements(nums []int) []int {
 					res[idx] = nums[i]
 				}
 			}
+		}
+		decStack.Push(i)
+	}
+	return res
+}
+
+func nextGreaterElementsV2(nums []int) []int {
+	res := make([]int, len(nums))
+	for i := range nums {
+		res[i] = -1
+	}
+
+	decStack := kit.SimpleStack[int]{}
+	for k := 0; k < len(nums)*2-1; k++ {
+		i := k % len(nums)
+		for !decStack.Empty() && nums[decStack.MustTop()] < nums[i] {
+			res[decStack.MustPop()] = nums[i]
 		}
 		decStack.Push(i)
 	}

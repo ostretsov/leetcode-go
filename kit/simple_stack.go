@@ -16,6 +16,14 @@ func (s *SimpleStack[T]) Pop() (T, bool) {
 	return t, ok
 }
 
+func (s *SimpleStack[T]) MustPop() T {
+	t, ok := s.Pop()
+	if !ok {
+		panic("can't pop")
+	}
+	return t
+}
+
 func (s *SimpleStack[T]) Top() (T, bool) {
 	var t T
 	if s.Empty() {
@@ -23,6 +31,14 @@ func (s *SimpleStack[T]) Top() (T, bool) {
 	}
 	t = s.data[len(s.data)-1]
 	return t, true
+}
+
+func (s *SimpleStack[T]) MustTop() T {
+	t, ok := s.Top()
+	if !ok {
+		panic("can't pop")
+	}
+	return t
 }
 
 func (s *SimpleStack[T]) Empty() bool {
