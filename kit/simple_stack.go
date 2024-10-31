@@ -4,6 +4,12 @@ type SimpleStack[T any] struct {
 	data []T
 }
 
+func (s *SimpleStack[T]) Clear() {
+	for !s.Empty() {
+		s.Pop()
+	}
+}
+
 func (s *SimpleStack[T]) Push(e T) {
 	s.data = append(s.data, e)
 }
